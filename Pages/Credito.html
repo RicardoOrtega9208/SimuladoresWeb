@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="../Scripts/jquery-3.2.1.js"></script>
+    <script src="../Scripts/Simuladores/ConecUtilities.js"></script>
+    <script src="../Scripts/Simuladores/DataSimulador.js"></script>
+    <script src="../Scripts/Simuladores/Utilities.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnsendcalc").hide();
+
+            ValidateNumber($("#txtplazo"));
+
+            $("#txtplazo").on('blur', function () {
+                var n = parseInt($(this).val().replace(/\D/g, ''), 10);
+                if (n > 84 || n < 1) {
+                    showErrorModal("El rango de meses debe ser de 1 a 84 meses");
+                    $(this).val('1');
+                }
+            });
+
+            ValidateNumber($("#txtcuota"));
+            ToDecimalonBlur($("#txtcuota"));
+
+        });
+
+
+
+        function sendData(pselect) {
+            var formapago = pselect.value;
+            var divresults = $("#divtblresultados");
+            var cuotas = +$("#txtcuota").val().replace(/\./g, '');
+            var plazo = +$("#txtplazo").val();
+            if ((cuotas != undefined && cuotas > 0) && (plazo != undefined && plazo > 0) && formapago > 0) {
+                Credito(plazo, cuotas, formapago, divresults);
+                $("#btnsendcalc").show();
+
+                if ($("#divtblresult").is(":visible")) {
+                    $("#divtblresult").hide();
+                }
+            } else {
+                showErrorModal("Por favor diligencie los datos correctamente");
+            }
+
+            return false;
+        }
+
+        function verProyectado() {
+
+            if ($("#divtblresult").is(":visible")) {
+                $("#divtblresult").hide();
+                $("#btnsendcalc").text("Ver Proyectado");
+
+            } else {
+                $("#divtblresult").show();
+                $("#btnsendcalc").text("Ocultar Proyectado");
+            }
+        }
+    </script>
+    <meta charset="utf-8" />
+    <link href="../Content/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-6 col-lg-6 col-sm-12 col-md-12 col-md-offset-2">
+            <div class="panel panel-primary geo-panel3" data-collapsed="0">
+                <div class="panel-heading">
+                    <div class="panel-title" style="text-align:center">
+                        Simulador de Creditos
+                    </div>
+                </div>
+                <div class="panel-body-internal">
+                    <form>
+                        <div class="form-group">
+                            <label for="lblPlazo">Digite el monto del credito</label>
+                            <input type="text" class="form-control" id="txtcuota" aria-describedby="cuotahelp" placeholder="Digite el monto del credito" required />
+                            <small id="cuotahelp" class="form-text text-muted">Digite el monto sin puntos, comas o decimales.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="lblPlazo">Digite el plazo del Crédito en meses</label>
+                            <input type="text" class="form-control" id="txtplazo" placeholder="Plazo en meses" required />
+                        </div>
+                        <div>
+                            <label for="lblformadepago">Seleccione Forma de Pago</label>
+                            <select id="ddlformapago" name="ddlformapago" class="form-control" onchange="sendData(this)">
+                                <option value="-1" selected="selected">Sin Selección</option>
+                                <option value="1">Caja</option>
+                                <option value="2">Libranza</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btnsendcalc" class="btn btn-primary" onclick="verProyectado();">Ver Proyectado</button>
+                    </form>
+                </div>
+                <br />
+                <br />
+                <br />
+                <div id="divresultados">
+                    <div class="panel-heading">
+                        <div class="panel-title bg-info" style="text-align:center">
+                            <label for="lblPlazo">RESUMEN</label>
+                            <br />
+                            <small class="form-text text-muted">* Valores Aproximados</small>
+                        </div>
+                    </div>
+                    <div class="panel-body-internal" id="divtblresultados">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+
+    <div class="modal fade" id="ErrorModalDialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header icom-modal-error-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title icom-modal-title">Error</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="icom-modal-instructions" id="errormsn"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-reset">Aceptar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</body>
+</html>

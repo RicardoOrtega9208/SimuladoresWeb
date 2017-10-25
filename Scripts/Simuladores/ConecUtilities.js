@@ -1,0 +1,1 @@
+﻿var urlConnect = "http://localhost/SimuladorService/Api/"
